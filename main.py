@@ -1,5 +1,6 @@
 from PIL import Image, ImageChops
 import cv2
+import os
 
 
 def find_image_position_opencv(large_image_path, small_image_path):
@@ -38,22 +39,47 @@ def insert_image_with_transparency(large_image_path, small_image_path, position,
     # Сохраняем результат
     large_image.save(output_path)
 
+def list_files(directory):
+    result = []
+    """Выводит список всех файлов в указанной директории."""
+    # Проверяем, существует ли директория
+    if not os.path.exists(directory):
+        print("Директория не найдена.")
+        return
+
+    # Перебираем все файлы в директории
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            result.append(os.path.join(root, file))
+    return result
+
+
 
 
 
 
 
 # Путь к вашим изображениям
-large_image_path = 'page_10_2.png'
-small_image_path = 'page_10_1.png'
-output_path = 'f.png'
+old_large_image_path = 'old_big'
+new_small_image_path = 'new_small'
+output_path = 'res'
+
+
+old_files_ls = list_files(old_large_image_path)
+print(old_files_ls)
+
+for x in old_files_ls:
+    print(x,"...")
+    nf_name = x.replace(old_large_image_path, new_small_image_path)
+    position = find_image_position_opencv(x, nf_name)
+    insert_image_with_transparency(x, nf_name, position, x.replace(old_large_image_path, output_path))
 
 
 
 # Найдем позицию и выведем ее
-position = find_image_position_opencv(large_image_path, small_image_path)
-print(f"Маленькое изображение должно быть вставлено в позицию: {position}")
+#position = find_image_position_opencv(large_image_path, small_image_path)
+#print(f"Маленькое изображение должно быть вставлено в позицию: {position}")
 
 
 # Вызываем функцию
-insert_image_with_transparency(large_image_path, small_image_path, position, output_path)
+#insert_image_with_transparency(large_image_path, small_image_path, position, output_path)
